@@ -1,0 +1,60 @@
+/**
+ * > 2018年9月1日15:26:22
+ * 1. 给定点和最大极径，限制点的圆形活动范围
+ * 2. 给定点和宽高，限制点的矩形活动范围
+ * 3. 给定点获取其极角
+ * 4. 给定极角，极径获取点
+ * 5. 给定点，获取极径
+ * 6. 给定点和条件， 获取随机数
+ * #### By AK-12 @[qq:1029985799@qq.com, gmail:saber2pr@gmail.com]
+ */
+var MathVec = {
+    /**
+     * 给定点和最大极径，限制点的活动范围
+     */
+    limitToCircle: function (commitPos, limitRadius) {
+        return this.getLength(commitPos)<limitRadius?commitPos:this.getPos(this.getAngle(commitPos), limitRadius)
+    },
+    /**
+     * 给定点和宽高，限制点的矩形活动范围
+     */
+    limitToRect: function (commitPos, width, height) {
+        return cc.v2(this.limitToWall(commitPos.x, width), this.limitToWall(commitPos.y, height))
+    },
+    /**
+     * 限定值大小
+     */
+    limitToWall: function (value, length) {
+        return Math.abs(value)<length?value:(value>0?length:-length)
+    },
+    /**
+     * 给定点获取其极角(弧度)
+     */
+    getAngle: function (Pos) {
+        if(Pos.y > 0){
+            return Math.acos(Pos.x/Pos.mag())
+        }else{
+            return -Math.acos(Pos.x/Pos.mag())
+        }
+    },
+    /**
+     * 给定极角，极径获取点
+     */
+    getPos: function (angle, radius) {
+        return cc.v2(radius*Math.cos(angle), radius*Math.sin(angle))
+    },
+    /**
+     * 给定点，获取极径
+     */
+    getLength: function (commitPos) {
+        return commitPos.mag()
+    },
+    /**
+     * 获取随机点
+     */
+    getRandNum: function (pos, method) {
+        return method==='x'?cc.v2(pos.x*cc.random0To1(), pos.y):cc.v2(pos.x, pos.y*cc.random0To1())
+    }
+}
+
+module.exports = MathVec
