@@ -6,6 +6,7 @@
  * 4. 给定极角，极径获取点
  * 5. 给定点，获取极径
  * 6. 给定点和条件， 获取随机数
+ * 7. 返回origin指向靶目标的单位向量
  * #### By AK-12 @[qq:1029985799@qq.com, gmail:saber2pr@gmail.com]
  */
 var MathVec = {
@@ -54,6 +55,13 @@ var MathVec = {
      */
     getRandNum: function (pos, method) {
         return method==='x'?cc.v2(pos.x*cc.random0To1(), pos.y):cc.v2(pos.x, pos.y*cc.random0To1())
+    },
+    /**
+     * 返回origin指向靶目标的单位向量
+     */
+    getFront(origin, target){
+        var front = cc.v2(target.x - origin.x, target.y - origin.y)
+        return cc.v2(front.x/front.mag(), front.y/front.mag())
     }
 }
 
