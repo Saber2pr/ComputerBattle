@@ -1945,11 +1945,7 @@
     },
     "_enabled": true,
     "_defaultClip": null,
-    "_clips": [
-      {
-        "__uuid__": "40636f65-cc04-4838-9b4e-c81d940c4248"
-      }
-    ],
+    "_clips": [],
     "playOnLoad": false
   },
   {
@@ -2108,22 +2104,19 @@
     "_atlas": null
   },
   {
-    "__type__": "cc.Animation",
+    "__type__": "31c76elAW9CEqz97ffeBric",
     "_name": "",
     "_objFlags": 0,
     "node": {
       "__id__": 52
     },
     "_enabled": true,
-    "_defaultClip": {
-      "__uuid__": "719b4d7c-7cb0-44b8-86c2-9cdfadd2913e"
+    "amary": {
+      "__id__": 52
     },
-    "_clips": [
-      {
-        "__uuid__": "719b4d7c-7cb0-44b8-86c2-9cdfadd2913e"
-      }
-    ],
-    "playOnLoad": true
+    "target": {
+      "__id__": 32
+    }
   },
   {
     "__type__": "cc.Node",
@@ -2830,6 +2823,9 @@
       "__id__": 3
     },
     "_enabled": true,
+    "backgroundSpr": {
+      "__id__": 8
+    },
     "backBtn": {
       "__id__": 17
     },

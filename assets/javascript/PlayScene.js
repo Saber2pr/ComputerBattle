@@ -1,6 +1,6 @@
 var MoveCtrllor = require("MoveCtrllor")
 var MathVec = require("MathVec")
-var AnimationMediator = require("AnimationMediator")
+// var AnimationMediator = require("AnimationMediator")
 var BarManager = require("BarManager")
 
 cc.Class({
@@ -41,7 +41,7 @@ cc.Class({
     },
 
     start () {
-        // this.addAmary()
+        this.addAmary()
         this.speed = 5
         this.backBtn.node.on("click", this.backToStartScene, this)
         this.powerX.node.on("touchstart", this.addBarSch, this)
@@ -53,9 +53,7 @@ cc.Class({
     addAmary(){
         var amary = cc.instantiate(this.amary)
         amary.parent = this.backgroundSpr.node
-        amary.position = MathVec.getRandNum(cc.v2(800, 480), 'y')
-        cc.log("hero"+this.hero.position)
-       
+        amary.position = MathVec.getRandNum(cc.v2(400, 480), 'y')
     },
 
     backToStartScene () {
