@@ -12,6 +12,13 @@ var AnimationMediator = {
     moveFollowTarget(node, speed, target){
         var front = MathVec.getFront(node, target)
         node.setPosition(node.x + front.x*speed, node.y + front.y*speed)
+    },
+
+	fireOnce(node, speed, that){
+        node.runAction(cc.moveTo(2*speed, cc.v2(cc.winSize.width, 0)))
+        that.scheduleOnce(function(){
+            node.destroy()
+        }, 2*speed)
     }
 }
 

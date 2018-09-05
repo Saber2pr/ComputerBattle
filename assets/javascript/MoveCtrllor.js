@@ -6,9 +6,7 @@ var MathVec = require('MathVec')
  * 1. 先在场景onload中初始化
  * > MoveCtrllor.init(this.touchBasic, this.touchTarget, 25)
  * 2. 然后在update里绑定角色节点
- * > if(MoveCtrllor.getStatus()===true){
-   >     MoveCtrllor.updateCharacter(this.hero, this.speed)
-   > }
+ * > MoveCtrllor.updateCharacter(this.hero, this.speed)  
  * 3. 传入拖动盘和拖动点，实现拖动手柄
  * 4. 提供返回拖动角度和拖动力度的接口
  * 5. 控制节点运动接口
@@ -27,7 +25,7 @@ var MoveCtrllor = {
     /**
      * 传入拖动盘和拖动点，实现拖动手柄
      */
-    init: function (basicSpr, touchSpr, radius) {
+    init: function (basicSpr, touchSpr, radius, that) {
         basicSpr.node.on("touchstart", function(touch){
             this.status=true
         }, this)
@@ -71,11 +69,14 @@ var MoveCtrllor = {
      * 角色动作响应,建议1<speed<10
      */
     updateCharacter(node, speed){
-        var angle = this.getMoveAngle()
-        var force = this.getForce()
-        var desPos = cc.p(node.x + speed*Math.cos(angle)*force, node.y + speed*Math.sin(angle)*force)
-        node.runAction(cc.moveTo(0.1, cc.v2(MathVec.limitToRect(desPos, 400, 240))))
-    }
+        if(this.getStatus()===true){
+            var angle = this.getMoveAngle()
+            var force = this.getForce()
+            var desPos = cc.p(node.x + speed*Math.cos(angle)*force, node.y + speed*Math.sin(angle)*force)
+            node.runAction(cc.moveTo(0.1, cc.v2(MathVec.limitToRect(desPos, 400, 240))))
+        }
+    },
+    
 }
 
 module.exports = MoveCtrllor

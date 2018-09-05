@@ -1,7 +1,9 @@
 var MoveCtrllor = require("MoveCtrllor")
 var MathVec = require("MathVec")
-// var AnimationMediator = require("AnimationMediator")
+var AnimationMediator = require("AnimationMediator")
 var BarManager = require("BarManager")
+var GlobalData = require("GlobalData")
+var EnemyFactory = require("EnemyFactory")
 
 cc.Class({
     extends: cc.Component,
@@ -13,47 +15,46 @@ cc.Class({
         //hero
         hero:cc.Node,
         bar:cc.ProgressBar,
-        bloodBar:cc.ProgressBar,
+        heroBlood:cc.ProgressBar,
         //weapon
         compu:cc.Node,
         //ctrl
         touchBasic:cc.Sprite,
         touchTarget:cc.Sprite,
         powerX:cc.Button,
-        //Amary
-        amary:cc.Node
+        //prefab
+        enemyType:cc.Prefab,
+        bulletType:cc.Prefab,
+        //spriteList
+        spriteList:{
+            default:[],
+            type:[cc.SpriteFrame]
+        }
     },
 
     speed:null,
     compuSpr:null,
 
-    addBarSch:function(){
-        BarManager.addBarSch(this.bar, this)
-    },
-    reduceBarSch:function(){
-        BarManager.reduceBarSch(this.bar, this)
-    },
-
     onLoad () {
-        this.bar.progress=0
-        this.bloodBar.progress=1
+        GlobalData.enemyVector = []
+		EnemyFactory.initSource(this.spriteList, this.enemyType, this.bulletType)
+        BarManager.initBar(this.bar, this)
+        BarManager.initPowerBtn(this.powerX)
+        MoveCtrllor.init(this.touchBasic, this.touchTarget, 25)
+        this.heroBlood.progress=1
         this.compuSpr=this.compu.getComponent(cc.Sprite)
     },
 
     start () {
-        this.addAmary()
-        this.speed = 5
+        this.addAmary() 
         this.backBtn.node.on("click", this.backToStartScene, this)
-        this.powerX.node.on("touchstart", this.addBarSch, this)
-        this.powerX.node.on("touchend",this.reduceBarSch, this)
-        this.powerX.node.on("touchcancel",this.reduceBarSch, this)
-        MoveCtrllor.init(this.touchBasic, this.touchTarget, 25)
     },
 
     addAmary(){
-        var amary = cc.instantiate(this.amary)
-        amary.parent = this.backgroundSpr.node
-        amary.position = MathVec.getRandNum(cc.v2(400, 480), 'y')
+        var bullet = EnemyFactory.createBullets(this.compu, this)
+		var enemy = EnemyFactory.createAmary(this.backgroundSpr.node)
+        enemy.position = MathVec.getRandNum(cc.v2(400, 480), 'y')
+    	GlobalData.enemyVector.push(enemy)
     },
 
     backToStartScene () {
@@ -61,9 +62,11 @@ cc.Class({
     },
 
     update (dt) {
-        if(MoveCtrllor.getStatus()===true){
-            MoveCtrllor.updateCharacter(this.hero, this.speed)
+		this.compu.color = this.bar.barSprite.node.color
+		for(var enemy of GlobalData.enemyVector){
+            AnimationMediator.moveFollowTarget(enemy, 1, this.hero)
         }
+        MoveCtrllor.updateCharacter(this.hero, 5)
     },
 
     onDestroy () {
