@@ -1,4 +1,4 @@
 module.exports = {
     enemyVector:null,
-	enemySprite:[]
+    enemySprite:[]
 }

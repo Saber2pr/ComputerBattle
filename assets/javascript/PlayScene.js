@@ -37,7 +37,7 @@ cc.Class({
 
     onLoad () {
         GlobalData.enemyVector = []
-		EnemyFactory.initSource(this.spriteList, this.enemyType, this.bulletType)
+        EnemyFactory.initSource(this.spriteList, this.enemyType, this.bulletType)
         BarManager.initBar(this.bar, this)
         BarManager.initPowerBtn(this.powerX)
         MoveCtrllor.init(this.touchBasic, this.touchTarget, 25)
@@ -52,7 +52,7 @@ cc.Class({
 
     addAmary(){
         var bullet = EnemyFactory.createBullets(this.compu, this)
-		var enemy = EnemyFactory.createAmary(this.backgroundSpr.node)
+        var enemy = EnemyFactory.createAmary(this.backgroundSpr.node)
         enemy.position = MathVec.getRandNum(cc.v2(400, 480), 'y')
     	GlobalData.enemyVector.push(enemy)
     },
@@ -62,8 +62,8 @@ cc.Class({
     },
 
     update (dt) {
-		this.compu.color = this.bar.barSprite.node.color
-		for(var enemy of GlobalData.enemyVector){
+        this.compu.color = this.bar.barSprite.node.color
+        for(var enemy of GlobalData.enemyVector){
             AnimationMediator.moveFollowTarget(enemy, 1, this.hero)
         }
         MoveCtrllor.updateCharacter(this.hero, 5)
