@@ -13,11 +13,18 @@
     [
       false,
       false,
+      true,
       true
     ],
     [
       false,
       true,
+      false
+    ],
+    [
+      false,
+      true,
+      false,
       false
     ]
   ],
@@ -29,7 +36,8 @@
   "group-list": [
     "default",
     "amary",
-    "hero"
+    "hero",
+    "bullet"
   ],
   "simulator-orientation": false,
   "simulator-resolution": {

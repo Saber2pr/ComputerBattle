@@ -13,6 +13,7 @@ cc.Class({
     // onLoad () {},
 
     start () {
+        
         this.startBtn.node.on("click", this.gotoPlayScene, this)
     },
 
@@ -21,6 +22,6 @@ cc.Class({
     },
 
     update (dt) {
-        AnimationMediator.backgroundLoop(this.backgroundSpr, 64)
+        AnimationMediator.backgroundLoop(this.backgroundSpr.node, 64)
     }
 });

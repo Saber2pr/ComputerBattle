@@ -39,6 +39,12 @@ var MathVec = {
         }
     },
     /**
+     * 弧度转角度
+     */
+    transformAngle(angle){
+        return angle * 180 / Math.PI
+    },
+    /**
      * 给定极角，极径获取点
      */
     getPos: function (angle, radius) {
@@ -62,6 +68,40 @@ var MathVec = {
     getFront(origin, target){
         var front = cc.v2(target.x - origin.x, target.y - origin.y)
         return cc.v2(front.x/front.mag(), front.y/front.mag())
+    },
+    /**
+     * 返回两点间距离
+     */
+    getDistance(origin, target){
+        return cc.v2(target.x - origin.x, target.y - origin.y).mag()
+    },
+    /**
+     * 求子节点的世界坐标(如果父节点在世界下)
+     */
+    transformToParentWorld(childNode){
+        return cc.v2(childNode.parent.x + childNode.x, childNode.parent.y + childNode.y)
+    },
+    /**
+     * 求数组中最大值
+     */
+    getMaxFromVector(vector){
+        return Math.max.apply(null, vector)
+    },
+    /**
+     * 求数组中最小值
+     */
+    getMinFromVector(vector){
+        return Math.min.apply(null, vector)
+    },
+    /**
+     * 求数组中元素下标
+     */
+    getOrderFromVector(elem, vector){
+        for(var order = 0; order < vector.length; order++){
+            if(elem === vector[order]){
+                return order
+            }
+        }
     }
 }
 

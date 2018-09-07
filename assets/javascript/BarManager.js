@@ -79,6 +79,9 @@ var BarManager = {
         BarManager.that.schedule(this.reduce=function(){
             BarManager.reducePower(bar)
         }, 0.01)
+    },
+    getColorFromBar(bar){
+        return bar.barSprite.node.color
     }
 }
 

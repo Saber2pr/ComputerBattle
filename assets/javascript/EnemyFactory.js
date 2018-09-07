@@ -1,6 +1,6 @@
 var AnimationMediator = require("AnimationMediator")
-var BulletPrefab = require("BulletPrefab")
 var GlobalData = require("GlobalData")
+var MathVec = require("MathVec")
 
 var EnemyFactory = {
     enemySpriteList:null,
@@ -8,12 +8,15 @@ var EnemyFactory = {
     enemyPool:null,
     bulletType:null,
     bulletPool:null,
+    bulletStringList:['var', 'let', 'const', 'function', 'return'],
+    that:null,
     
-    initSource(spriteList, enemyType, bulletType){
+    initSource(enemyType, bulletType, that, spriteList){
+        this.that = that
     	this.enemySpriteList = spriteList
     	this.enemyType = enemyType
+        this.bulletType = bulletType
     	this.enemyPool = new cc.NodePool()
-    	this.bulletType = bulletType,
     	this.bulletPool = new cc.NodePool()
     	for (let i=0, initCount=5; i < initCount; ++i){
     	    let enemy = cc.instantiate(enemyType)
@@ -22,30 +25,31 @@ var EnemyFactory = {
     	    this.bulletPool.put(bullet)
     	}
     },
-    
+
     //提取实例
     createAmary(parentNode){
     	var enemy = this.getTypeNodeFromPool(this.enemyType, this.enemyPool)
     	enemy.parent = parentNode
-    	//enemy.getComponent(cc.Sprite) = this.enemySpriteList[parseInt((this.enemySpriteList.length-1)*cc.random0To1())]
-    	cc.log("num:"+parseInt((this.enemySpriteList.length-1)*cc.random0To1()))
+        enemy.getChildByName('spr').getComponent(cc.Sprite).spriteFrame = this.getRandSpriteFrame()
     	return enemy
     },
     
-    createBullets(parentNode, that){
-    	var bulletPrefab = new BulletPrefab(this.bulletType)
-    	cc.log("root"+bulletPrefab)
+    createLabelBulletToEnemys(parentNode, vector){
     	var bullet = this.getTypeNodeFromPool(this.bulletType, this.bulletPool)
-    	cc.log("createBullet"+bullet)
-    	AnimationMediator.fireOnce(bullet, 1, that)
-    	bullet.parent = parentNode
-    	bullet.setPosition(0, 0)
-    	return bullet
+    	bullet.parent = parentNode.parent.parent
+    	bullet.setPosition(cc.director.getScene().convertToWorldSpaceAR(MathVec.transformToParentWorld(parentNode)))
+        bullet.color = AnimationMediator.randColor()
+        bullet.getComponent(cc.Label).string = AnimationMediator.getRandString(EnemyFactory.bulletStringList)
+        AnimationMediator.fireToTargetOnce(bullet, 0.5, AnimationMediator.getNearestTarget(parentNode, vector), this.that)
+        return bullet
     },
     
     getTypeNodeFromPool(typeNode, pool){
-    //return pool.size()>0?pool.get():cc.instantiate(typeNode)
-    	return cc.instantiate(typeNode)
+        return pool.size()>0?pool.get():cc.instantiate(typeNode)
+    },
+
+    getRandSpriteFrame(){
+        return this.enemySpriteList[parseInt((EnemyFactory.enemySpriteList.length)*cc.random0To1())]
     }
 }
 
