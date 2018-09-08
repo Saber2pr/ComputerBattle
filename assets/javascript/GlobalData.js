@@ -1,6 +1,7 @@
 var GlobalData = {
     enemyVector:null,
-    enemySprite:[]
+    enemySprite:[],
+    bulletVector:null
 }
 
 module.exports = GlobalData

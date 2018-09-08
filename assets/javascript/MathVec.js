@@ -102,6 +102,24 @@ var MathVec = {
                 return order
             }
         }
+    },
+    /**
+     * 返回负坐标
+     */
+    getPosNegative(Pos){
+        return cc.v2(-Pos.x, -Pos.y)
+    },
+    /**
+     * 两点相加
+     */
+    addTwoPos(pos1, pos2, method){
+        return cc.p(pos1.x + pos2.x, pos1.y + pos2.y)
+    },
+    /**
+     * 获取数组中随机元素
+     */
+    getRandElem(vector){
+        return vector[parseInt((vector.length)*cc.random0To1())]
     }
 }
 

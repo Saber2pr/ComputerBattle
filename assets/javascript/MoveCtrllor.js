@@ -18,8 +18,11 @@ var MoveCtrllor = {
     status:null,
     heroSpeed:null,
     radius:null,
+    lastAngle:null,
 
     onload(touchSpr){
+        //保留角度
+        this.lastAngle = this.angle
         this.angle=0
         this.force=0
         this.status=false
@@ -45,7 +48,8 @@ var MoveCtrllor = {
             //保存拖动力度
             this.force = MathVec.getLength(touchPosOnBasicLimited)/this.radius
         }, this)
-        basicSpr.node.on("touchend", function(touch){
+        basicSpr.node.on("touchend", function(touch){            
+            //重置状态
             this.onload(touchSpr)
         }, this)
         basicSpr.node.on("touchcancel", function(touch){
@@ -57,6 +61,12 @@ var MoveCtrllor = {
      */
     getMoveAngle(){
         return this.angle
+    },
+    /**
+     * 获取终止角度(弧度)
+     */
+    getLastAngle(){
+        return this.lastAngle
     },
     /**
      * 获取拖动力度
@@ -74,14 +84,22 @@ var MoveCtrllor = {
      * 角色动作响应
      */
     updateCharacter(node){
+        this.directToDes(node, 'character')
+    },
+    updateCamera(node){
+        this.directToDes(node, 'camera')
+    },
+    directToDes(node, method){
         if(this.getStatus()===true){
             var angle = this.getMoveAngle()
             var force = this.getForce()
-            var desPos = cc.p(node.x + this.heroSpeed*Math.cos(angle)*force, node.y + this.heroSpeed*Math.sin(angle)*force)
-            node.runAction(cc.moveTo(0.1, cc.v2(MathVec.limitToRect(desPos, 400, 240))))
+            var desPos = 
+                method==='character'?cc.p(node.x + this.heroSpeed*Math.cos(angle)*force, node.y + this.heroSpeed*Math.sin(angle)*force):
+                method==='camera'?cc.p(node.x - this.heroSpeed*Math.cos(angle)*force, node.y - this.heroSpeed*Math.sin(angle)*force):
+                console.log("methodError")
+            node.runAction(cc.moveTo(0.1, cc.v2(MathVec.limitToRect(desPos, 400*0.66, 240*0.66))))
         }
-    },
-    
+    }
 }
 
 module.exports = MoveCtrllor

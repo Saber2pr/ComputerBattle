@@ -3,7 +3,7 @@ cc.Class({
     extends: cc.Component,
 
     properties: {
-      
+        restartBtn:cc.Button
     },
 
     // LIFE-CYCLE CALLBACKS:
@@ -11,7 +11,9 @@ cc.Class({
     // onLoad () {},
 
     start () {
-
+        this.restartBtn.node.on("click", function(){
+            cc.director.loadScene("PlayScene")
+        }, this)
     },
 
     // update (dt) {},

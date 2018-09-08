@@ -1,20 +1,9 @@
+var MathVec = require("MathVec")
 
-cc.Class({
-    extends: cc.Component,
+var CollisionManager = {
+    testPos(pos1, pos2, dis){
+        return MathVec.getDistance(pos1, pos2)<dis?true:false
+    }
+}
 
-    properties: {
-        bullet:cc.Node
-    },
-
-    onBeginContact(contact, selfCollider, otherCollider){
-        cc.log("contact!")
-    },
-
-    // onLoad () {},
-
-    start () {
-
-    },
-
-    // update (dt) {},
-});
+module.exports = CollisionManager
