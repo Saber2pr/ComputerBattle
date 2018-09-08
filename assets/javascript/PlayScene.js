@@ -51,6 +51,7 @@ cc.Class({
     },
 
     start () {
+        //GlobalData.enemyVector.push(EnemyFactory.createAmary(this.backgroundLayer))
         this.backBtn.node.on("click", function(){
             cc.director.loadScene("StartScene")
         })
@@ -71,15 +72,14 @@ cc.Class({
     },
 
     update (dt) {
-        EnemyFactory.createAmaryAuto(GlobalData.enemyVector, this.backgroundLayer)
+        EnemyFactory.createAmaryInVectorAuto(GlobalData.enemyVector, this.backgroundLayer)
         //摄像机视角
         MoveCtrllor.updateCamera(this.backgroundLayer)
+        //人物默认转向
+        AnimationMediator.faceTargetByAngle(this.weapon.rotation, this.hero.getChildByName('spr'))
         //武器自动转向
         MoveCtrllor.getStatus()===true?this.weapon.rotation = -MathVec.transformAngle(MoveCtrllor.getMoveAngle()):
-        this.weapon.rotation = -MathVec.transformAngle(MoveCtrllor.getLastAngle()) 
-        
-        // Math.abs(this.weapon.rotation)>90?this.hero.getChildByName('spr').runAction(cc.flipX(true)):
-       // this.hero.getChildByName('spr').runAction(cc.flipX(false))
+        this.weapon.rotation = -MathVec.transformAngle(MoveCtrllor.getLastAngle())      
         //人物血量为0，load游戏结果
         if(this.heroBlood.progress<0.01){
             cc.director.loadScene("OverScene")
@@ -101,11 +101,12 @@ cc.Class({
         for(var bullet of GlobalData.bulletVector){
             for(var enemy of GlobalData.enemyVector){
                 //子弹撞到怪物，怪物减血
-                if(CollisionManager.testPos(bullet.position, enemy.position, 10)){
+                if(CollisionManager.testPos(bullet.position, enemy.position, 30)){
                     enemy.getChildByName('blood').getComponent(cc.ProgressBar).progress-=0.2
                     //怪物死亡
                     if(enemy.getChildByName('blood').getComponent(cc.ProgressBar).progress<0.05){
-                        enemy.removeFromParent(false)
+                        enemy.destroy()
+                        GlobalData.enemyVector.pop()
                     }
                     cc.log("EBLOOD"+enemy.getChildByName('blood').getComponent(cc.ProgressBar).progress)
                     cc.log("contact")

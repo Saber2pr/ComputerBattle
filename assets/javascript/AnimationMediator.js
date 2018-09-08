@@ -91,7 +91,6 @@ var AnimationMediator = {
      */
     faceTargetToX(node, sprNode, target){
         node.x-target.x>0?sprNode.runAction(cc.flipX(true)):sprNode.runAction(cc.flipX(false))
-        cc.log(node.x-target.x)
     },
     /**
      * 根据角度翻转X

@@ -29,11 +29,13 @@ var EnemyFactory = {
     	}
     },
     /**
-     * 在图层中产生怪物(layer)
+     * 在图层中产生怪物(layer, pos)
      */
-    createAmary(layer){
+    createAmary(layer, pos){
+        let _pos = typeof(pos==='undefined')?cc.p(100, 100):pos
     	var enemy = this.getTypeNodeFromPool(this.enemyType, this.enemyPool)
     	enemy.parent = layer
+        enemy.position = _pos
     	return enemy
     },
     /**
@@ -71,12 +73,10 @@ var EnemyFactory = {
     /**
      * 自动产生enemy(enemyVector, layer, pos)
      */
-    createAmaryAuto(enemyVector, layer, pos){
-        let _pos = typeof(pos==='undefined')?cc.p(100, 100):pos
+    createAmaryInVectorAuto(enemyVector, layer, pos){
         if(enemyVector.length<1){
-            let enemy = EnemyFactory.createAmary(layer)
-            enemyVector.push(enemy)
-            enemy.position = _pos
+            let enemy = EnemyFactory.createAmary(layer, pos)
+            enemyVector.push(enemy)            
         }
     }
 }
