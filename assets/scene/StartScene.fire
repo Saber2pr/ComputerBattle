@@ -302,8 +302,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 1000,
-      "height": 700
+      "width": 1200,
+      "height": 800
     },
     "_rotationX": 0,
     "_rotationY": 0,
@@ -467,7 +467,7 @@
     "_N$file": null,
     "_isSystemFontUsed": true,
     "_spacingX": 0,
-    "_N$string": "键盘风暴",
+    "_N$string": "贪玩骑士",
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
     "_N$fontFamily": "Arial",
@@ -761,6 +761,9 @@
     },
     "backgroundSpr": {
       "__id__": 7
+    },
+    "audio": {
+      "__uuid__": "519a6f04-a7e1-4c3e-a478-9bd03ccb9407"
     }
   },
   {

@@ -1,3 +1,4 @@
+
 var AnimationMediator = require("AnimationMediator")
 
 cc.Class({
@@ -5,7 +6,8 @@ cc.Class({
 
     properties: {
         startBtn:cc.Button,
-        backgroundSpr:cc.Sprite
+        backgroundSpr:cc.Sprite,
+        audio:cc.AudioClip
     },
 
     // LIFE-CYCLE CALLBACKS:
@@ -13,11 +15,11 @@ cc.Class({
     // onLoad () {},
 
     start () {
-        
         this.startBtn.node.on("click", this.gotoPlayScene, this)
     },
 
     gotoPlayScene () {
+        this.current = cc.audioEngine.play(this.audio, false, 1)
         cc.director.loadScene("PlayScene")
     },
 

@@ -14,11 +14,11 @@ var EnemyFactory = {
      */
     initSource(enemyType, bulletType, that, spriteList){
         this.that = that
-    	this.enemySpriteList = spriteList
-    	this.enemyType = enemyType
+        this.enemySpriteList = spriteList
+        this.enemyType = enemyType
         this.bulletType = bulletType
-    	this.enemyPool = new cc.NodePool()
-    	this.bulletPool = new cc.NodePool()
+        this.enemyPool = new cc.NodePool()
+        this.bulletPool = new cc.NodePool()
     	for (let i=0, initCount=5; i < initCount; ++i){
     	    let enemy = cc.instantiate(enemyType)
             enemy.getChildByName('spr').getComponent(cc.Sprite).spriteFrame = EnemyFactory.getRandSpriteFrame()
@@ -32,7 +32,7 @@ var EnemyFactory = {
      * 在图层中产生怪物(layer, pos)
      */
     createAmary(layer, pos){
-        let _pos = typeof(pos==='undefined')?cc.p(100, 100):pos
+        let _pos = pos==='undefined'?cc.p(100, 100):pos
     	var enemy = this.getTypeNodeFromPool(this.enemyType, this.enemyPool)
     	enemy.parent = layer
         enemy.position = _pos
@@ -75,8 +75,7 @@ var EnemyFactory = {
      */
     createAmaryInVectorAuto(enemyVector, layer, pos){
         if(enemyVector.length<1){
-            let enemy = EnemyFactory.createAmary(layer, pos)
-            enemyVector.push(enemy)            
+            enemyVector.push(EnemyFactory.createAmary(layer, pos))          
         }
     }
 }

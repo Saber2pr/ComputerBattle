@@ -57,20 +57,26 @@ var MathVec = {
         return commitPos.mag()
     },
     /**
-     * 获取随机点
+     * 获取随机x或y点(pos, method)
      */
     getRandNum: function (pos, method) {
         return method==='x'?cc.v2(pos.x*cc.random0To1(), pos.y):cc.v2(pos.x, pos.y*cc.random0To1())
     },
     /**
-     * 返回origin指向靶目标的单位向量
+     * 获取随机点(scalePos, minScale)
+     */
+    getRandPos: function (scalePos, minScale) {
+        return cc.v2(scalePos.x*cc.random0To1() + minScale.x, scalePos.y*cc.random0To1() + minScale.y)
+    },
+    /**
+     * 返回origin指向靶目标的单位向量(origin, target)
      */
     getFront(origin, target){
         var front = cc.v2(target.x - origin.x, target.y - origin.y)
         return cc.v2(front.x/front.mag(), front.y/front.mag())
     },
     /**
-     * 返回两点间距离
+     * 返回两点间距离(origin, target)
      */
     getDistance(origin, target){
         return cc.v2(target.x - origin.x, target.y - origin.y).mag()
@@ -94,7 +100,7 @@ var MathVec = {
         return Math.min.apply(null, vector)
     },
     /**
-     * 求数组中元素下标
+     * 求数组中指定元素下标
      */
     getOrderFromVector(elem, vector){
         for(var order = 0; order < vector.length; order++){
