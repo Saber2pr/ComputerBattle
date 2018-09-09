@@ -52,14 +52,14 @@ var AnimationMediator = {
     /**
      * 面向目标节点(node, target)
      */
-    faceToTarget(node, target){
-        AnimationMediator.rotateToTarget(node, target)
+    faceToTarget(node, parentNode, target){
+        AnimationMediator.rotateToTarget(node, parentNode, target)
     },
     /**
      * 面向最近的节点(node, vector)
      */
-    faceToNearestTarget(node, vector){
-        this.faceToTarget(node, this.getNearestTarget(node, vector))
+    faceToNearestTarget(node, parentNode, vector){
+        this.faceToTarget(node, parentNode, this.getNearestTarget(parentNode, vector))
     },
     /**
      * 获取最近的节点(node, vector)
@@ -77,8 +77,8 @@ var AnimationMediator = {
     /**
      * 转向目标(node, target)
      */
-    rotateToTarget(node, target){
-        node.rotation = -MathVec.transformAngle(MathVec.getAngle(MathVec.getFront(node, target)))
+    rotateToTarget(node, parentNode, target){
+        node.rotation = -MathVec.transformAngle(MathVec.getAngle(MathVec.getFront(parentNode, target)))
     },
     /**
      * 同步旋转(node1, node2)
@@ -103,7 +103,8 @@ var AnimationMediator = {
     faceTargetByAngle(angle, sprNode){
         Math.abs(angle)>90?sprNode.runAction(cc.flipX(true)):
             sprNode.runAction(cc.flipX(false))
-    }
+    },
+    
 }
 
 module.exports = AnimationMediator

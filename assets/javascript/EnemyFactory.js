@@ -19,11 +19,17 @@ var EnemyFactory = {
         this.bulletType = bulletType
         this.enemyPool = new cc.NodePool()
         this.bulletPool = new cc.NodePool()
-    	for (let i=0, initCount=5; i < initCount; ++i){
-    	    let enemy = cc.instantiate(enemyType)
+    	EnemyFactory.fillPool()
+    },
+    /**
+     * 填充对象池
+     */
+    fillPool(){
+        for (let i=0, initCount=5; i < initCount; ++i){
+    	    let enemy = cc.instantiate(EnemyFactory.enemyType)
             enemy.getChildByName('spr').getComponent(cc.Sprite).spriteFrame = EnemyFactory.getRandSpriteFrame()
     	    this.enemyPool.put(enemy)
-    	    let bullet = cc.instantiate(bulletType)
+    	    let bullet = cc.instantiate(EnemyFactory.bulletType)
             bullet.color = AnimationMediator.randColor()
     	    this.bulletPool.put(bullet)
     	}
@@ -33,7 +39,7 @@ var EnemyFactory = {
      */
     createAmary(layer, pos){
         let _pos = pos==='undefined'?cc.p(100, 100):pos
-    	var enemy = this.getTypeNodeFromPool(this.enemyType, this.enemyPool)
+    	var enemy = this.getTypeNodeFromPool(this.enemyPool)
     	enemy.parent = layer
         enemy.position = _pos
     	return enemy
@@ -42,7 +48,7 @@ var EnemyFactory = {
      * 产生子弹(parentNode, layer)
      */
     createBullet(parentNode, layer){
-        var bullet = EnemyFactory.getTypeNodeFromPool(this.bulletType, this.bulletPool)
+        var bullet = EnemyFactory.getTypeNodeFromPool(this.bulletPool)
     	bullet.parent = layer
     	bullet.setPosition(layer.convertToNodeSpace(parentNode.position))
         AnimationMediator.fireOnce(bullet, 100, parentNode.rotation, 1, this.that)
@@ -52,17 +58,22 @@ var EnemyFactory = {
      * 产生自动索敌子弹(parentNode, layer, vector)
      */
     createBulletToEnemy(parentNode, layer, vector){
-    	var bullet = this.getTypeNodeFromPool(this.bulletType, this.bulletPool)
+    	var bullet = this.getTypeNodeFromPool(this.bulletPool)
     	bullet.parent = layer
-    	bullet.setPosition(layer.convertToNodeSpace(parentNode.position))
+    	bullet.setPosition(parentNode)
         AnimationMediator.fireToTargetOnce(bullet, 0.1, AnimationMediator.getNearestTarget(parentNode, vector), this.that)
         return bullet
     },
     /**
      * 从对象池获取类型
      */
-    getTypeNodeFromPool(typeNode, pool){
-        return pool.size()>0?pool.get():cc.instantiate(typeNode)
+    getTypeNodeFromPool(pool){
+        if(pool.size()>0){
+            return pool.get()
+        }else{
+            EnemyFactory.fillPool()
+            return pool.get()
+        }
     },
     /**
      * 获取随机精灵
@@ -71,10 +82,10 @@ var EnemyFactory = {
         return MathVec.getRandElem(EnemyFactory.enemySpriteList)
     },
     /**
-     * 自动产生enemy(enemyVector, layer, pos)
+     * 自动产生enemy(enemyVector, layer, num, pos)
      */
-    createAmaryInVectorAuto(enemyVector, layer, pos){
-        if(enemyVector.length<1){
+    createAmaryInVectorAuto(enemyVector, layer, num, pos){
+        if(enemyVector.length<num){
             enemyVector.push(EnemyFactory.createAmary(layer, pos))          
         }
     }

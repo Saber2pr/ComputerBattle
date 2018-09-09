@@ -97,7 +97,7 @@ var MoveCtrllor = {
                 method==='character'?cc.p(node.x + this.heroSpeed*Math.cos(angle)*force, node.y + this.heroSpeed*Math.sin(angle)*force):
                 method==='camera'?cc.p(node.x - this.heroSpeed*Math.cos(angle)*force, node.y - this.heroSpeed*Math.sin(angle)*force):
                 console.log("methodError")
-            node.runAction(cc.moveTo(0.1, cc.v2(MathVec.limitToRect(desPos, 750*0.66, 240*0.66))))
+            node.position = cc.v2(MathVec.limitToRect(desPos, 750*0.66, 240*0.66))
         }
     }
 }

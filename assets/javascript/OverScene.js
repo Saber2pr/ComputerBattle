@@ -5,9 +5,14 @@ cc.Class({
     extends: cc.Component,
 
     properties: {
+        //ui
         restartBtn:cc.Button,
-        scoreLabel:cc.Label,
-        list:cc.Label,
+        //表格数据
+        newScore:cc.Label,
+        newLevel:cc.Label,
+        hScore:cc.Label,
+        hLevel:cc.Label,
+        //background
         backgroundSpr:cc.Sprite,
         audio:cc.AudioClip
     },
@@ -15,9 +20,17 @@ cc.Class({
     // LIFE-CYCLE CALLBACKS:
 
     onLoad () {
-        this.scoreLabel.string = GlobalData.score
-        GlobalData.scoreVector.push(this.scoreLabel.string)
-        this.list.string = Math.max.apply(null, GlobalData.scoreVector)
+        //统计结果
+        //分数
+        this.updateLabel(this.newScore, this.hScore, GlobalData.score, GlobalData.scoreVector)
+        //关卡
+        this.updateLabel(this.newLevel, this.hLevel, GlobalData.level, GlobalData.levelVector)
+    },
+    
+    updateLabel(label, hLabel, string, vector){
+        label.string = string
+        vector.push(label.string)
+        hLabel.string = Math.max.apply(null, vector)
     },
 
     start () {
