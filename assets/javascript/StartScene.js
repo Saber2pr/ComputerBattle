@@ -12,10 +12,14 @@ cc.Class({
 
     // LIFE-CYCLE CALLBACKS:
 
-    // onLoad () {},
+    bool:null,
 
     start () {
+        this.bool = true
         this.startBtn.node.on("click", this.gotoPlayScene, this)
+        this.schedule(function(){
+            this.bool = !this.bool
+        }, 1)
     },
 
     gotoPlayScene () {
@@ -24,6 +28,7 @@ cc.Class({
     },
 
     update (dt) {
+        this.startBtn.node.active = this.bool
         AnimationMediator.backgroundLoop(this.backgroundSpr.node, 64)
     }
 });
