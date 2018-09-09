@@ -21,6 +21,7 @@ cc.Class({
         timeLabel:cc.Label,
         heroBloodLabel:cc.Label,
         bulletLabel:cc.Label,
+        ideaLabel:cc.Label,
         levelLabel:cc.Label,
         //ui
         backBtn:cc.Button,
@@ -32,6 +33,7 @@ cc.Class({
         hero:cc.Node,
         heroBlood:cc.ProgressBar,
         powerBar:cc.ProgressBar,
+        ideaBar:cc.ProgressBar,
         weapon:cc.Node,
         //enemy
         enemyBar:cc.ProgressBar,
@@ -49,6 +51,9 @@ cc.Class({
     enemySpeed:null,
     timeStep:null,
     bulletNum:null,
+    //计数器
+    count:null,
+    nextCount:null,
     // LIFE-CYCLE CALLBACKS:
     
     onLoad () {
@@ -67,6 +72,8 @@ cc.Class({
         this.enemySpeed=0.5
         this.enemyLock=false
         this.enemyNum=1
+        //count
+        this.count=0
         //GlobalDataInit
         GlobalData.enemyVector = []
         GlobalData.bulletVector = []
@@ -110,7 +117,8 @@ cc.Class({
 
     update (dt) {        
         //同步子弹数量
-        this.bulletLabel.string = parseInt(this.powerBar.progress*this.bulletNum)      
+        this.bulletLabel.string = parseInt(this.powerBar.progress*this.bulletNum)    //同步智力值
+        this.ideaLabel.string = parseInt(this.ideaBar.progress*100)  
         //匹配子弹和怪物
         for(var bullet of GlobalData.bulletVector){
             for(var i=0; i<GlobalData.enemyVector.length; i++){
@@ -145,8 +153,19 @@ cc.Class({
             this.noticeLabel.node.removeFromParent(false)
             this.enemyLock=true
         }
+        if(this.count>60){
+            this.ideaBar.progress-=0.01
+        }
         //产生怪物
         if(this.enemyLock){
+            //开始计数
+            this.count+=1
+            if(MoveCtrllor.getStatus()===true){
+                this.count=0
+                if(this.ideaBar.progress<=1){
+                    this.ideaBar.progress+=0.005
+                }
+            }
             EnemyFactory.createAmaryInVectorAuto(GlobalData.enemyVector, this.backgroundLayer, this.enemyNum, MathVec.getRandPos(cc.p(600, 480*0.66), cc.p(-300, -240*0.66)))
             //武器锁定最近目标
             AnimationMediator.faceToNearestTarget(this.weapon, MathVec.getPosNegative(this.backgroundLayer.position), GlobalData.enemyVector)
@@ -155,8 +174,8 @@ cc.Class({
         AnimationMediator.faceTargetByAngle(this.weapon.rotation, this.hero.getChildByName('spr'))
         //摄像机视角
         MoveCtrllor.updateCamera(this.backgroundLayer)
-        //人物血量为0或弹药用尽，load游戏结果
-        if(this.heroBlood.progress<0.01 || this.bulletLabel.string<0){
+        //人物血量为0或弹药用尽或智力为0，load游戏结果
+        if(this.heroBlood.progress<0.01 || this.bulletLabel.string<0 || this.ideaBar.progress<0.01){
             GlobalData.score = this.scoreLabel.string
             GlobalData.level = this.levelLabel.string
             cc.director.loadScene("OverScene")
