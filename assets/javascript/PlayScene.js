@@ -148,6 +148,7 @@ cc.Class({
             this.noticeLabel.node.removeFromParent(false)
             this.enemyLock=true
         }
+        //静止一秒后减少智力,恢复子弹
         if(this.count>60){
             this.ideaBar.progress-=0.005
             this.powerBar.progress+=0.005
