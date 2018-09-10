@@ -97,8 +97,6 @@ cc.Class({
             }
             //弹药减少
             this.powerBar.progress-=1/this.bulletNum
-            //计数增加
-            this.count+=10
             //保存子弹数据
             GlobalData.bulletVector.push(bullet)
         }, this)
@@ -135,12 +133,8 @@ cc.Class({
                         //删除记录
                         GlobalData.enemyVector.splice(i, 1)
                         i-=1
-                        //加分数，加子弹
+                        //加分数
                         this.scoreLabel.string+=1
-                        this.powerBar.progress+=0.14
-                        if(this.powerBar.progress>1){
-                            this.powerBar.progress=1
-                        }
                     }
                 }
             }
@@ -155,25 +149,23 @@ cc.Class({
             this.enemyLock=true
         }
         if(this.count>60){
-            this.ideaBar.progress-=0.01
-        }
-        //计数器归零
-        if(this.count>0){
-            this.count--
-        }
-        //冷却
-        if(this.count<=5){
-            if(this.ideaBar.progress<=1){
-                this.ideaBar.progress+=0.01
-            }
-        }
-        //如果过热，体力减少
-        if(this.ideaBar.progress>=0 && this.count>5){
             this.ideaBar.progress-=0.005
+            this.powerBar.progress+=0.005
+            if(this.powerBar.progress>1){
+                this.powerBar.progress=1
+            }
         }
         //产生怪物
         if(this.enemyLock){            
-            
+            //开始计数
+            this.count+=1
+            if(MoveCtrllor.getStatus()===true){
+                this.count=0
+                if(this.ideaBar.progress<=1){
+                    this.ideaBar.progress+=0.005
+                }
+
+            }
             EnemyFactory.createAmaryInVectorAuto(GlobalData.enemyVector, this.backgroundLayer, this.enemyNum, MathVec.getRandPos(cc.p(600, 480*0.66), cc.p(-300, -240*0.66)))
             //武器锁定最近目标
             AnimationMediator.faceToNearestTarget(this.weapon, MathVec.getPosNegative(this.backgroundLayer.position), GlobalData.enemyVector)
@@ -182,7 +174,7 @@ cc.Class({
         AnimationMediator.faceTargetByAngle(this.weapon.rotation, this.hero.getChildByName('spr'))
         //摄像机视角
         MoveCtrllor.updateCamera(this.backgroundLayer)
-        //人物血量为0或弹药用尽或体力为0，load游戏结果
+        //人物血量为0或弹药用尽或智力为0，load游戏结果
         if(this.heroBlood.progress<0.01 || this.bulletLabel.string<0 || this.ideaBar.progress<0.01){
             GlobalData.score = this.scoreLabel.string
             GlobalData.level = this.levelLabel.string
