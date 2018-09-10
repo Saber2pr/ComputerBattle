@@ -49,9 +49,13 @@ var EnemyFactory = {
      */
     createBullet(parentNode, layer){
         var bullet = EnemyFactory.getTypeNodeFromPool(this.bulletPool)
-    	bullet.parent = layer
-    	bullet.setPosition(layer.convertToNodeSpace(parentNode.position))
-        AnimationMediator.fireOnce(bullet, 100, parentNode.rotation, 1, this.that)
+        bullet.active=false
+    	bullet.parent = parentNode.parent
+        bullet.scaleX=1
+        bullet.scaleY=1
+    	bullet.setPosition(0, 0)
+        AnimationMediator.fireOnce(bullet, 500, MathVec.transformAngleToRad(-parentNode.rotation), 0.2, this.that)
+        cc.log(parentNode.rotation)
         return bullet
     },
     /**

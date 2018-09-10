@@ -32,6 +32,7 @@ var MoveCtrllor = {
      * 传入拖动盘和拖动点，实现拖动手柄
      */
     init: function (basicSpr, touchSpr, radius, heroSpeed) {
+        MoveCtrllor.onload(touchSpr)
         this.radius = typeof(radius)==='undefined'?25:radius
         this.heroSpeed = typeof(heroSpeed)==='undefined'?5:heroSpeed
         basicSpr.node.on("touchstart", function(touch){

@@ -45,6 +45,12 @@ var MathVec = {
         return angle * 180 / Math.PI
     },
     /**
+     * 角度转弧度
+     */
+    transformAngleToRad(angle){
+        return angle / (180*Math.PI)
+    },
+    /**
      * 给定极角，极径获取点
      */
     getPos: function (angle, radius) {
