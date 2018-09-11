@@ -24,6 +24,9 @@ cc.Class({
         ideaLabel:cc.Label,
         levelLabel:cc.Label,
         //ui
+        ///layout
+        pauseLayout:cc.Layout,
+        pauseBtn:cc.Button,
         backBtn:cc.Button,
         //ctrl
         basic:cc.Sprite,
@@ -82,9 +85,16 @@ cc.Class({
     },
 
     start () {
+        this.pauseBtn.node.on("click", function(){
+            this.current = cc.audioEngine.play(this.audio, false, 1)
+            this.pauseLayout.node.y>-300?this.pauseLayout.node.getComponent(cc.Animation).play():
+                this.pauseLayout.node.y+=694
+            //this.node.pause()
+        }, this)
         this.backBtn.node.on("click", function(){
             this.current = cc.audioEngine.play(this.audio, false, 1)
             cc.director.loadScene("StartScene")
+            this.pauseLayout.node.y+=694
         }, this)
         //发射按键
         this.powerBtn.node.on("click",function(){

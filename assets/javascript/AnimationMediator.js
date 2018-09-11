@@ -103,8 +103,8 @@ var AnimationMediator = {
     faceTargetByAngle(angle, sprNode){
         Math.abs(angle)>90?sprNode.runAction(cc.flipX(true)):
             sprNode.runAction(cc.flipX(false))
-    },
-    
+    }
+
 }
 
 module.exports = AnimationMediator
