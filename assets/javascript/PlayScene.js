@@ -89,6 +89,26 @@ cc.Class({
     },
 
     start () {
+        //初始化按钮
+        this.buttonInit()
+        //初始化定时器
+        this.scheduleInit()
+    },
+    scheduleInit(){
+        this.schedule(function(){
+            if(this.enemyLock){
+                this.timeLabel.string-=1
+                if(this.timeLabel.string<0){
+                    this.timeStep+=10
+                    this.timeLabel.string=this.timeStep
+                    this.enemySpeed+=0.5
+                    this.levelLabel.string+=1
+                    this.enemyNum+=2
+                }
+            }
+        }, 1)
+    },
+    buttonInit(){
         this.pauseBtn.node.on("click", function(){
             this.current = cc.audioEngine.play(this.audio, false, 1)
             this.pauseIn()
@@ -112,30 +132,52 @@ cc.Class({
             //保存子弹数据
             GlobalData.bulletVector.push(bullet)
         }, this)
-        this.schedule(function(){
-            if(this.enemyLock){
-                this.timeLabel.string-=1
-                if(this.timeLabel.string<0){
-                    this.timeStep+=10
-                    this.timeLabel.string=this.timeStep
-                    this.enemySpeed+=0.5
-                    this.levelLabel.string+=1
-                    this.enemyNum+=2
-                }
-            }
-        }, 1)
     },
-
+    pauseIn(){
+        if(this.pauseLayout.node.y>-300 && !cc.director.isPaused()){
+            var pauseState = this.pauseLayout.node.getComponent(cc.Animation).play()
+            this.scheduleOnce(function(){
+                cc.director.pause()
+            }, pauseState.duration)
+        }else{
+            cc.director.resume()
+            this.pauseLayout.node.y+=694
+        }
+    },
+    pauseOut(){
+        cc.director.resume()
+        this.pauseLayout.node.y+=694
+    },
     update (dt) {     
+        //同步数据
+        this.synData()
+        //匹配子弹和怪物
+        this.collisionHandle()
+        //武器自动转向
+        this.guideVisual()
+        //进入战斗区域
+        this.enterDangerArea()
+        //静止一秒后减少智力,恢复子弹
+        this.heroStayRecover()
+        //产生怪物
+        this.appearEnemy()
+        //怪物行动
+        this.enemyAction()
+        //人物血量为0或弹药用尽或智力为0，load游戏结果
+        this.judgeGameStatus()
+    },
+    synData(){
         //同步子弹数量
-        this.bulletLabel.string = parseInt(this.powerBar.progress*this.bulletNum)    //同步智力值
+        this.bulletLabel.string = parseInt(this.powerBar.progress*this.bulletNum)
+        //同步智力值    
         this.ideaLabel.string = parseInt(this.ideaBar.progress*100)  
         //同步wall
         //this.wall.position = this.backgroundLayer.position
         
         //cc.log(this.wall.position)
         //cc.log(MathVec.getPosNegative(this.backgroundLayer.position))
-        //匹配子弹和怪物
+    },
+    collisionHandle(){
         for(var bullet of GlobalData.bulletVector){
             for(var i=0; i<GlobalData.enemyVector.length; i++){
                 var enemy = GlobalData.enemyVector[i]
@@ -156,16 +198,24 @@ cc.Class({
                 }
             }
         }
-        //武器自动转向
+    },
+    guideVisual(){
         MoveCtrllor.getStatus()===true?this.weapon.rotation = -MathVec.transformAngle(MoveCtrllor.getMoveAngle()):
         this.weapon.rotation = -MathVec.transformAngle(MoveCtrllor.getLastAngle())
-        //进入战斗区域
+        AnimationMediator.faceTargetByAngle(this.weapon.rotation, this.hero.getChildByName('spr'))
+        MoveCtrllor.updateCamera(this.backgroundLayer)
+    },
+    guideHeroByEnemy(enemy){
+        AnimationMediator.faceTargetToX(MathVec.getPosNegative(this.backgroundLayer.position), this.hero.getChildByName('spr'), enemy)
+    },
+    enterDangerArea(){
         if(this.backgroundLayer.x<300){
             //移除指示
             this.noticeLabel.node.removeFromParent(false)
             this.enemyLock=true
         }
-        //静止一秒后减少智力,恢复子弹
+    },
+    heroStayRecover(){
         if(this.count>60){
             this.ideaBar.progress-=0.005
             this.powerBar.progress+=0.005
@@ -173,7 +223,8 @@ cc.Class({
                 this.powerBar.progress=1
             }
         }
-        //产生怪物
+    },
+    appearEnemy(){
         if(this.enemyLock){            
             //开始计数
             this.count+=1
@@ -182,28 +233,26 @@ cc.Class({
                 if(this.ideaBar.progress<=1){
                     this.ideaBar.progress+=0.005
                 }
-
             }
             EnemyFactory.createAmaryInVectorAuto(GlobalData.enemyVector, this.backgroundLayer, this.enemyNum, MathVec.getRandPos(cc.p(600, 480*0.66), cc.p(-300, -240*0.66)))
             //武器锁定最近目标
             AnimationMediator.faceToNearestTarget(this.weapon, MathVec.getPosNegative(this.backgroundLayer.position), GlobalData.enemyVector)
         }
-        //人物默认转向
-        AnimationMediator.faceTargetByAngle(this.weapon.rotation, this.hero.getChildByName('spr'))
-        //摄像机视角
-        MoveCtrllor.updateCamera(this.backgroundLayer)
-        //人物血量为0或弹药用尽或智力为0，load游戏结果
+    },
+    judgeGameStatus(){
         if(this.heroBlood.progress<0.01 || this.bulletLabel.string<0 || this.ideaBar.progress<0.01){
             GlobalData.score = this.scoreLabel.string
             GlobalData.level = this.levelLabel.string
             cc.director.loadScene("OverScene")
         }
+    },
+    enemyAction(){
         for(var enemy of GlobalData.enemyVector){
             //enemy追踪角色
             AnimationMediator.moveFollowTarget(enemy, MathVec.getPosNegative(this.backgroundLayer.position), this.enemySpeed)
             //backgroundLayer和enemy的坐标原点都是编辑器里的(0, 0)
             //由于摄像机移动，backgroundLayer的坐标为负数
-            AnimationMediator.faceTargetToX(MathVec.getPosNegative(this.backgroundLayer.position), this.hero.getChildByName('spr'), enemy)
+            this.guideHeroByEnemy(enemy)
             //人物撞到怪物减血
             if(CollisionManager.testPos(MathVec.getPosNegative(this.backgroundLayer.position), enemy.position, 10)){
                 this.heroBlood.progress -= 0.005
@@ -211,19 +260,4 @@ cc.Class({
             }
         }
     },
-    pauseIn(){
-        if(this.pauseLayout.node.y>-300 && !cc.director.isPaused()){
-            var pauseState = this.pauseLayout.node.getComponent(cc.Animation).play()
-            this.scheduleOnce(function(){
-                cc.director.pause()
-            }, pauseState.duration)
-        }else{
-            cc.director.resume()
-            this.pauseLayout.node.y+=694
-        }
-    },
-    pauseOut(){
-        cc.director.resume()
-        this.pauseLayout.node.y+=694
-    }
 });
