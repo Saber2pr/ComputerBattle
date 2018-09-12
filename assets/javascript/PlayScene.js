@@ -16,6 +16,7 @@ cc.Class({
         audio:cc.AudioClip,
         //background
         backgroundLayer:cc.Node,
+        wall:cc.Node,
         noticeLabel:cc.Label,
         scoreLabel:cc.Label,
         timeLabel:cc.Label,
@@ -48,7 +49,7 @@ cc.Class({
         enemyType:cc.Node,
         bulletType:cc.Node
     },
-    
+
     enemyLock:null,
     enemyNum:null,
     enemySpeed:null,
@@ -59,7 +60,7 @@ cc.Class({
     nextCount:null,
     // LIFE-CYCLE CALLBACKS:
     
-    onLoad () {
+    onLoad () {        
         //labelSet
         this.bulletNum=20
         this.timeLabel.string=0
@@ -82,19 +83,20 @@ cc.Class({
         GlobalData.bulletVector = []
         MoveCtrllor.init(this.basic, this.touch)
         EnemyFactory.initSource(this.enemyType, this.bulletType, this, this.enemySpriteList)
+        // 启用碰撞  
+        //cc.director.getPhysicsManager().enabled = true
+        //cc.director.getPhysicsManager().gravity = cc.v2(0, 0)
     },
 
     start () {
         this.pauseBtn.node.on("click", function(){
             this.current = cc.audioEngine.play(this.audio, false, 1)
-            this.pauseLayout.node.y>-300?this.pauseLayout.node.getComponent(cc.Animation).play():
-                this.pauseLayout.node.y+=694
-            //this.node.pause()
+            this.pauseIn()
         }, this)
         this.backBtn.node.on("click", function(){
             this.current = cc.audioEngine.play(this.audio, false, 1)
+            this.pauseOut()            
             cc.director.loadScene("StartScene")
-            this.pauseLayout.node.y+=694
         }, this)
         //发射按键
         this.powerBtn.node.on("click",function(){
@@ -124,10 +126,15 @@ cc.Class({
         }, 1)
     },
 
-    update (dt) {        
+    update (dt) {     
         //同步子弹数量
         this.bulletLabel.string = parseInt(this.powerBar.progress*this.bulletNum)    //同步智力值
         this.ideaLabel.string = parseInt(this.ideaBar.progress*100)  
+        //同步wall
+        //this.wall.position = this.backgroundLayer.position
+        
+        //cc.log(this.wall.position)
+        //cc.log(MathVec.getPosNegative(this.backgroundLayer.position))
         //匹配子弹和怪物
         for(var bullet of GlobalData.bulletVector){
             for(var i=0; i<GlobalData.enemyVector.length; i++){
@@ -203,5 +210,20 @@ cc.Class({
                 this.heroBloodLabel.string=parseInt(this.heroBlood.progress*100)
             }
         }
+    },
+    pauseIn(){
+        if(this.pauseLayout.node.y>-300 && !cc.director.isPaused()){
+            var pauseState = this.pauseLayout.node.getComponent(cc.Animation).play()
+            this.scheduleOnce(function(){
+                cc.director.pause()
+            }, pauseState.duration)
+        }else{
+            cc.director.resume()
+            this.pauseLayout.node.y+=694
+        }
+    },
+    pauseOut(){
+        cc.director.resume()
+        this.pauseLayout.node.y+=694
     }
 });

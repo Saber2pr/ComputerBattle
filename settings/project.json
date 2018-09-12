@@ -19,9 +19,18 @@
     [
       false,
       true,
+      false,
+      null,
+      true
+    ],
+    [
+      false,
+      true,
+      false,
       false
     ],
     [
+      false,
       false,
       true,
       false,
@@ -37,7 +46,8 @@
     "default",
     "amary",
     "hero",
-    "bullet"
+    "bullet",
+    "wall"
   ],
   "simulator-orientation": false,
   "simulator-resolution": {
