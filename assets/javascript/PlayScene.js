@@ -84,8 +84,8 @@ cc.Class({
         MoveCtrllor.init(this.basic, this.touch)
         EnemyFactory.initSource(this.enemyType, this.bulletType, this, this.enemySpriteList)
         // 启用碰撞  
-        //cc.director.getPhysicsManager().enabled = true
-        //cc.director.getPhysicsManager().gravity = cc.v2(0, 0)
+        cc.director.getPhysicsManager().enabled = true
+        cc.director.getPhysicsManager().gravity = cc.v2(0, 0)
     },
 
     start () {
@@ -172,9 +172,13 @@ cc.Class({
         //同步智力值    
         this.ideaLabel.string = parseInt(this.ideaBar.progress*100)  
         //同步wall
-        //this.wall.position = this.backgroundLayer.position
+        this.wall.position = this.backgroundLayer.position
+        for(var walls of this.wall.children){
+            MoveCtrllor.updateCharacter(walls)
+            cc.log("wall"+walls.position)
+        }
+
         
-        //cc.log(this.wall.position)
         //cc.log(MathVec.getPosNegative(this.backgroundLayer.position))
     },
     collisionHandle(){

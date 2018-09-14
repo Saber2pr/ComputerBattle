@@ -7,6 +7,7 @@ cc.Class({
     },
 
     onBeginContact (contact,selfCollider,otherCollider){
+        cc.log("contact!")
         //获取碰撞的世界信息
         var worldManifold = contact.getWorldManifold()
         //获取碰撞点的世界坐标[0:vec2, 1:vec2, ...]
