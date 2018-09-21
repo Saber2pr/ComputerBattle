@@ -176,9 +176,7 @@ cc.Class({
         for(var walls of this.wall.children){
             MoveCtrllor.updateCharacter(walls)
             cc.log("wall"+walls.position)
-        }
-
-        
+        }        
         //cc.log(MathVec.getPosNegative(this.backgroundLayer.position))
     },
     collisionHandle(){
